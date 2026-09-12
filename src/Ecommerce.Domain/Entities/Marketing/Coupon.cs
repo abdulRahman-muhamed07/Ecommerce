@@ -1,6 +1,6 @@
 using Ecommerce.Domain.Common;
 
-namespace Ecommerce.Domain.Entities.Marketing;
+namespace Ecommerce.Domain.Entities;
 
 public sealed class Coupon : BaseEntity
 {
