@@ -1,12 +1,15 @@
-namespace Ecommerce.Application.Abstractions;
-
-using Microsoft.EntityFrameworkCore;
 using Ecommerce.Domain.Entities;
 
-public interface IApplicationDbContext
+namespace Ecommerce.Application.Abstractions;
+
+public interface IProductRepository
 {
-    DbSet<Product> Products { get; }
-    DbSet<Order> Orders { get; }
-    DbSet<OrderItem> OrderItems { get; }
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task AddAsync(Product product, CancellationToken cancellationToken = default);
+}
+
+public interface IOrderRepository
+{
+    Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task AddAsync(Order order, CancellationToken cancellationToken = default);
 }
