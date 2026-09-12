@@ -13,5 +13,5 @@ public sealed class Coupon : BaseEntity
     public DateTime EndDate { get; private set; }
     public int? UsageLimit { get; private set; }
     public int UsedCount { get; private set; }
-    public bool IsActive { get; private set; }
+    public bool IsActive { get; private set; } = true;
 }

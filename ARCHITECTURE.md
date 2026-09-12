@@ -1,32 +1,61 @@
 # Ecommerce Architecture
 
+This solution follows a pragmatic Clean Architecture structure suitable for a mid-level production-style .NET backend.
+
+## Dependency direction
+
+`Api -> Application -> Domain`
+
+`Infrastructure -> Application + Domain`
+
+The Domain does not reference EF Core, ASP.NET Core, Identity, SQL Server, or external providers.
+
 ## Solution structure
 
-- `Ecommerce.Domain`: business entities, enums and domain rules. No EF Core, ASP.NET Core or external service dependencies.
-- `Ecommerce.Application`: use-case contracts, repository abstractions, DTOs/commands/queries and application business orchestration.
-- `Ecommerce.Infrastructure`: EF Core, SQL Server, ASP.NET Core Identity, repositories and external integrations.
-- `Ecommerce.Api`: HTTP boundary, controllers, middleware, authentication/authorization configuration and composition root.
+```text
+src/
+├── Ecommerce.Domain/
+│   ├── Common/
+│   │   └── BaseEntity.cs
+│   ├── Entities/
+│   │   ├── Catalog/
+│   │   ├── Commerce/
+│   │   ├── Operations/
+│   │   ├── Marketing/
+│   │   └── CustomerExperience/
+│   └── Enums/
+│
+├── Ecommerce.Application/
+│   ├── Abstractions/
+│   │   └── Persistence/
+│   └── Features/              # use cases are added here by feature
+│
+├── Ecommerce.Infrastructure/
+│   ├── Identity/
+│   ├── Persistence/
+│   │   ├── Configurations/
+│   │   ├── Repositories/
+│   │   └── ApplicationDbContext.cs
+│   └── Services/              # external integrations and technical services
+│
+└── Ecommerce.Api/
+    ├── Controllers/
+    ├── Middleware/
+    └── Extensions/
+```
 
-## Domain organization
+## Domain rule
 
-The Domain entities are grouped by business module instead of keeping one large flat `Entities` folder:
+Each database table has one Domain entity file. Related entities are grouped only by business area, not merged into large files.
 
-- `Entities/Catalog`: products, variants, categories, brands and product attributes/images.
-- `Entities/Commerce`: addresses, carts, wishlists and orders.
-- `Entities/Operations`: inventory, payments, refunds and shipping.
-- `Entities/Marketing`: coupons, promotions and flash sales.
-- `Entities/CustomerExperience`: loyalty, returns, reviews, product Q&A, notifications and audit logs.
+## EF Core
 
-This is an organizational boundary inside the Domain layer; the entities remain free of infrastructure concerns.
+Entity mappings live under `Infrastructure/Persistence/Configurations` and implement `IEntityTypeConfiguration<T>`. `ApplicationDbContext` only composes those configurations with `ApplyConfigurationsFromAssembly`.
 
 ## Identity
 
-Authentication and role management use ASP.NET Core Identity through `ApplicationUser : IdentityUser`. The business tables reference `AspNetUsers.Id` rather than implementing a second user system.
+ASP.NET Core Identity owns authentication and authorization through `ApplicationUser : IdentityUser`. Business entities reference `AspNetUsers.Id` instead of creating a second user system.
 
-## Main domain areas
+## Feature growth
 
-Catalog, inventory, carts, orders, payments, shipping, coupons, promotions, flash sales, loyalty points, returns, reviews, product Q&A, notifications and audit logging.
-
-## Local database
-
-The default development connection points to SQL Server LocalDB using database `EcommerceDb`. Generate migrations from `Ecommerce.Infrastructure` after restoring packages.
+Application code is organized by use case/feature (for example `Catalog/Products` or `Orders`) rather than mirroring the database tables. A feature may contain Commands, Queries, DTOs, Validators and Handlers as it grows.
