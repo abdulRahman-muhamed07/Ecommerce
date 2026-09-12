@@ -22,7 +22,8 @@ public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
     public DbSet<Shipment> Shipments => Set<Shipment>();
-    public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<ProductReview> Reviews => Set<ProductReview>();
+    public DbSet<Coupon> Coupons => Set<Coupon>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -33,5 +34,8 @@ public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         b.Entity<ProductVariant>().HasIndex(x => x.SKU).IsUnique();
         b.Entity<Order>().HasIndex(x => x.OrderNumber).IsUnique();
         b.Entity<Coupon>().HasIndex(x => x.Code).IsUnique();
+        b.Entity<Order>().Property(x => x.OrderStatus).HasConversion<string>();
+        b.Entity<Order>().Property(x => x.PaymentStatus).HasConversion<string>();
+        b.Entity<Order>().Property(x => x.FulfillmentStatus).HasConversion<string>();
     }
 }
