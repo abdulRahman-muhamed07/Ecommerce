@@ -7,6 +7,18 @@
 - `Ecommerce.Infrastructure`: EF Core, SQL Server, ASP.NET Core Identity, repositories and external integrations.
 - `Ecommerce.Api`: HTTP boundary, controllers, middleware, authentication/authorization configuration and composition root.
 
+## Domain organization
+
+The Domain entities are grouped by business module instead of keeping one large flat `Entities` folder:
+
+- `Entities/Catalog`: products, variants, categories, brands and product attributes/images.
+- `Entities/Commerce`: addresses, carts, wishlists and orders.
+- `Entities/Operations`: inventory, payments, refunds and shipping.
+- `Entities/Marketing`: coupons, promotions and flash sales.
+- `Entities/CustomerExperience`: loyalty, returns, reviews, product Q&A, notifications and audit logs.
+
+This is an organizational boundary inside the Domain layer; the entities remain free of infrastructure concerns.
+
 ## Identity
 
 Authentication and role management use ASP.NET Core Identity through `ApplicationUser : IdentityUser`. The business tables reference `AspNetUsers.Id` rather than implementing a second user system.
