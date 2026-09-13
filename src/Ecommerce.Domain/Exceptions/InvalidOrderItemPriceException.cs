@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+namespace Ecommerce.Domain.Exceptions;
 
-namespace Ecommerce.Domain.Exceptions
+public sealed class InvalidOrderItemPriceException : DomainRuleException
 {
-    internal class InvalidOrderItemPriceException : Exception
+    public InvalidOrderItemPriceException()
+        : base("Order item unit price cannot be negative.")
     {
-        public InvalidOrderItemPriceException()
-            : base("Order item unit price cannot be negative.")
-        {
-        }
     }
 }

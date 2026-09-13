@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+namespace Ecommerce.Domain.Exceptions;
 
-namespace Ecommerce.Domain.Exceptions
+public sealed class InvalidOrderItemQuantityException : DomainRuleException
 {
-    internal class InvalidOrderItemQuantityException : Exception
+    public InvalidOrderItemQuantityException()
+        : base("Order item quantity must be greater than zero.")
     {
-
-        public InvalidOrderItemQuantityException()
-       : base("Order item quantity must be greater than zero.")
-        {
-        }
     }
 }

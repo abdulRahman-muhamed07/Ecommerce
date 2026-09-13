@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+namespace Ecommerce.Domain.Exceptions;
 
-namespace Ecommerce.Domain.Exceptions
+public sealed class EmptyOrderException : DomainRuleException
 {
-    public class EmptyOrderException : Exception
+    public EmptyOrderException()
+        : base("An order must contain at least one item.")
     {
-        public EmptyOrderException()
-            : base("An order must contain at least one item.")
-        {
-        }
     }
 }

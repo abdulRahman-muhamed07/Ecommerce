@@ -1,13 +1,10 @@
-﻿    using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
-namespace Ecommerce.Domain.Exceptions
+namespace Ecommerce.Domain.Exceptions;
+
+public class DomainRuleException : Exception
 {
-    public class DomainRuleException : Exception
+    public DomainRuleException(string message) : base(message)
     {
-        public DomainRuleException(string message) : base(message)
-        {
-        }       
     }
 }

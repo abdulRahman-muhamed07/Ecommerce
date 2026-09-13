@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Ecommerce.Domain.Enums;
 
-namespace Ecommerce.Domain.Exceptions
+namespace Ecommerce.Domain.Exceptions;
+
+public sealed class InvalidOrderStatusTransitionException : DomainRuleException
 {
-    internal class InvalidOrderStatusTransitionException : Exception
+    public InvalidOrderStatusTransitionException(
+        OrderStatus currentStatus,
+        OrderStatus requestedStatus)
+        : base($"Cannot change order status from {currentStatus} to {requestedStatus}.")
     {
-        public InvalidOrderStatusTransitionException(
-            OrderStatus currentStatus,
-            OrderStatus requestedStatus)
-            : base(
-                $"Cannot change order status from {currentStatus} to {requestedStatus}.")
-        {
-        }
     }
 }

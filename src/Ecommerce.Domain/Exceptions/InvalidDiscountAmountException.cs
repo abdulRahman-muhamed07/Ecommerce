@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+namespace Ecommerce.Domain.Exceptions;
 
-namespace Ecommerce.Domain.Exceptions
+public sealed class InvalidDiscountAmountException : DomainRuleException
 {
-    internal class InvalidDiscountAmountException : Exception
+    public InvalidDiscountAmountException()
+        : base("Discount amount cannot be negative or exceed the item subtotal.")
     {
-        public InvalidDiscountAmountException()
-            : base("Discount amount cannot exceed the item subtotal.")
-        {
-        }
     }
 }
