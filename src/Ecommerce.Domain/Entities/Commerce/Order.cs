@@ -47,7 +47,8 @@ public sealed class Order : BaseEntity
 
     public void Deliver()
     {
-        OrderCanDeliverRule.Check(OrderStatus);
+        OrderCanDeliverRule.Check(OrderStatus);//يعني انا هنا بعمل شيك الاول بالبيزنيس رول
+                                              //اللي اسمه  كان دليفر رول وبتشيك الاول ثم احول الحاله عادي 
         OrderStatus = OrderStatus.Delivered;
     }
 
