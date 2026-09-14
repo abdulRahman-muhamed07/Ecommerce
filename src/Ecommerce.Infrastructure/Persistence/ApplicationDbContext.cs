@@ -63,4 +63,14 @@ public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>, I
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
+
+    public sealed class GetProductsHandler
+    {
+        private readonly IApplicationDbContext _context;    
+
+        public GetProductsHandler(IApplicationDbContext context)
+        {
+            _context = context;
+        }
+    }
 }
