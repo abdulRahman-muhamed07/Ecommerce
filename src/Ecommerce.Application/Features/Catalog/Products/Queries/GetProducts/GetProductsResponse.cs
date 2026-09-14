@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ecommerce.Application.Features.Catalog.Products.Contracts
+namespace Ecommerce.Application.Features.Catalog.Products.Queries.GetProducts
 {
     public sealed record GetProductsResponse(
     Guid Id,
