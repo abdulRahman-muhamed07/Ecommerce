@@ -6,3 +6,4 @@ obj/
 *.userosscache
 *.sln.docstates
 appsettings.Development.json
+/src/Ecommerce.Application/Features/Catalog/Products/Contracts/ProductDto.cs
