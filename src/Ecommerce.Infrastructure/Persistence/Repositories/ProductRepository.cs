@@ -19,7 +19,9 @@ public sealed class ProductRepository : IProductRepository
         CancellationToken cancellationToken = default)
     {
         return await ProductQuery()
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(
+                x => x.Id == id && x.Status == ProductStatus.Active,
+                cancellationToken);
     }
 
     public async Task<Product?> GetBySlugAsync(
@@ -27,15 +29,9 @@ public sealed class ProductRepository : IProductRepository
         CancellationToken cancellationToken = default)
     {
         return await ProductQuery()
-            .FirstOrDefaultAsync(x => x.Slug == slug, cancellationToken);
-    }
-
-    public async Task<IReadOnlyList<Product>> GetAllAsync(
-        CancellationToken cancellationToken = default)
-    {
-        return await ProductQuery()
-            .OrderBy(x => x.Name)
-            .ToListAsync(cancellationToken);
+            .FirstOrDefaultAsync(
+                x => x.Slug == slug && x.Status == ProductStatus.Active,
+                cancellationToken);
     }
 
     public async Task<IReadOnlyList<Product>> GetActiveAsync(
@@ -74,40 +70,6 @@ public sealed class ProductRepository : IProductRepository
                          (x.Description != null && x.Description.Contains(searchTerm))))
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);
-    }
-
-    public async Task<bool> ExistsBySlugAsync(
-        string slug,
-        Guid? excludingId = null,
-        CancellationToken cancellationToken = default)
-    {
-        var query = _context.Products
-            .AsNoTracking()
-            .Where(x => x.Slug == slug);
-
-        if (excludingId.HasValue)
-        {
-            query = query.Where(x => x.Id != excludingId.Value);
-        }
-
-        return await query.AnyAsync(cancellationToken);
-    }
-
-    public async Task AddAsync(
-        Product product,
-        CancellationToken cancellationToken = default)
-    {
-        await _context.Products.AddAsync(product, cancellationToken);
-    }
-
-    public void Update(Product product)
-    {
-        _context.Products.Update(product);
-    }
-
-    public void Delete(Product product)
-    {
-        _context.Products.Remove(product);
     }
 
     private IQueryable<Product> ProductQuery()
