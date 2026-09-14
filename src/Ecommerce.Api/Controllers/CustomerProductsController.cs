@@ -13,15 +13,32 @@ namespace Ecommerce.Api.Controllers
 
 
         private readonly GetProductsHandler _handler;
+        private readonly GetProductsHandler _getProductsHandler;
 
         private readonly GetProductByIdHandler _getProductByIdHandler;
 
-        public CustomerProductsController(GetProductsHandler handler, GetProductByIdHandler getProductByIdHandler)
-        {
+        public CustomerProductsController(GetProductsHandler handler, GetProductByIdHandler getProductByIdHandler, 
+            GetProductsHandler getProductsHandler)
+        {       
+            
+            _getProductsHandler = getProductsHandler;
+
             _handler = handler;
             _getProductByIdHandler = getProductByIdHandler;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetProducts(
+     CancellationToken cancellationToken)
+        {
+            var query = new GetProductsQuery();
+
+            var result = await _getProductsHandler.HandleAsync(
+                query,
+                cancellationToken);
+
+            return Ok(result);
+        }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)

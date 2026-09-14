@@ -47,7 +47,7 @@ public static class DependencyInjection
         .AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
-            {ثثثث
+            {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
                 ValidateIssuer = true,
