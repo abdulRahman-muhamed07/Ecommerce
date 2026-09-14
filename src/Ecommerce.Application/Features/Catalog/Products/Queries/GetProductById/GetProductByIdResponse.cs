@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
 
-namespace Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById
-{
-    internal class GetProductByIdResponse
-    {
-    }
-}
+public sealed record GetProductByIdResponse(
+    Guid Id,
+    string Name,
+    string Slug,
+    string? Description,
+    Guid BrandId,
+    Guid CategoryId);

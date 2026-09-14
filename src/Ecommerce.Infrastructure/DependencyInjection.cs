@@ -1,4 +1,5 @@
 using Ecommerce.Application.Abstractions.Persistence;
+using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
 using Ecommerce.Infrastructure.Identity;
 using Ecommerce.Infrastructure.Persistence;
 using Ecommerce.Infrastructure.Persistence.Repositories;
@@ -20,6 +21,7 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<GetProductByIdHandler>();
 
         services.AddIdentityCore<ApplicationUser>(options =>
         {
@@ -45,7 +47,7 @@ public static class DependencyInjection
         .AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
-            {
+            {ثثثث
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
                 ValidateIssuer = true,
