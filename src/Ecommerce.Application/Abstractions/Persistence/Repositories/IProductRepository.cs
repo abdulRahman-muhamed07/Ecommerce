@@ -12,9 +12,10 @@ public interface IProductRepository
         string slug,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<Product>> GetActiveAsync(
-        CancellationToken cancellationToken = default);
-
+    Task<(IReadOnlyList<Product> Items, int TotalCount)> GetActiveAsync(
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Product>> GetByCategoryIdAsync(
         Guid categoryId,
         CancellationToken cancellationToken = default);

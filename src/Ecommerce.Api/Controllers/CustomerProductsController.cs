@@ -28,11 +28,9 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProducts([FromQuery] GetProductsQuery query, CancellationToken cancellationToken)
 
         {
-            var query = new GetProductsQuery();
-
             var result = await _getProductsHandler.HandleAsync(
                 query,
                 cancellationToken);

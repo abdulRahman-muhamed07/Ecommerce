@@ -34,13 +34,23 @@ public sealed class ProductRepository : IProductRepository
                 cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Product>> GetActiveAsync(
-        CancellationToken cancellationToken = default)
+    public async Task<(IReadOnlyList<Product> Items, int TotalCount)> GetActiveAsync(
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken = default)
     {
-        return await ProductQuery()
-            .Where(x => x.Status == ProductStatus.Active)
-            .OrderBy(x => x.Name)
+        var query = _context.Products
+            .AsNoTracking()
+            .Where(p => p.Status == ProductStatus.Active);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
     }
 
     public async Task<IReadOnlyList<Product>> GetByCategoryIdAsync(

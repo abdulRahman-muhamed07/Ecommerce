@@ -11,14 +11,19 @@ public sealed class GetProductsHandler
         _productRepository = productRepository;
     }
 
-    public async Task<IReadOnlyList<GetProductsResponse>> HandleAsync(
-        GetProductsQuery query,
-        CancellationToken cancellationToken = default)
+    public async Task<GetProductsPaginatedResponse> HandleAsync(
+         GetProductsQuery query,
+         CancellationToken cancellationToken = default)
     {
-        var products = await _productRepository.GetActiveAsync(
+        var result = await _productRepository.GetActiveAsync(
+            query.PageNumber,
+            query.PageSize,
             cancellationToken);
 
-        return products
+        var products = result.Items;
+        var totalCount = result.TotalCount;
+
+        var items = products
             .Select(product => new GetProductsResponse(
                 product.Id,
                 product.Name,
@@ -27,5 +32,15 @@ public sealed class GetProductsHandler
                 product.BrandId,
                 product.CategoryId))
             .ToList();
+
+        var totalPages = (int)Math.Ceiling(
+            (double)totalCount / query.PageSize);
+
+        return new GetProductsPaginatedResponse(
+            items,
+            query.PageNumber,
+            query.PageSize,
+            totalCount,
+            totalPages);
     }
 }
