@@ -1,65 +1,71 @@
-﻿using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
+using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProducts;
-using Microsoft.AspNetCore.Http;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata;
 
-namespace Ecommerce.Api.Controllers
+namespace Ecommerce.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class CustomerProductsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CustomerProductsController : ControllerBase
+    private readonly GetProductsHandler _getProductsHandler;
+    private readonly GetProductByIdHandler _getProductByIdHandler;
+    private readonly IValidator<GetProductsQuery> _getProductsValidator;
+
+    public CustomerProductsController(
+        GetProductsHandler getProductsHandler,
+        GetProductByIdHandler getProductByIdHandler,
+        IValidator<GetProductsQuery> getProductsValidator)
     {
+        _getProductsHandler = getProductsHandler;
+        _getProductByIdHandler = getProductByIdHandler;
+        _getProductsValidator = getProductsValidator;
+    }
 
+    [HttpGet]
+    public async Task<IActionResult> GetProducts(
+        [FromQuery] GetProductsQuery query,
+        CancellationToken cancellationToken)
+    {
+        var validationResult = await _getProductsValidator.ValidateAsync(
+            query,
+            cancellationToken);
 
-        private readonly GetProductsHandler _handler;
-        private readonly GetProductsHandler _getProductsHandler;
-
-        private readonly GetProductByIdHandler _getProductByIdHandler;
-
-        public CustomerProductsController(GetProductsHandler handler, GetProductByIdHandler getProductByIdHandler, 
-            GetProductsHandler getProductsHandler)
-        {       
-            
-            _getProductsHandler = getProductsHandler;
-
-            _handler = handler;
-            _getProductByIdHandler = getProductByIdHandler;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetProducts([FromQuery] GetProductsQuery query, CancellationToken cancellationToken)
-
+        if (!validationResult.IsValid)
         {
-            var result = await _getProductsHandler.HandleAsync(
-                query,
-                cancellationToken);
+            var errors = validationResult.Errors
+                .GroupBy(error => error.PropertyName)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Select(error => error.ErrorMessage).ToArray());
 
-            return Ok(result);
+            return ValidationProblem(errors);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+        var result = await _getProductsHandler.HandleAsync(
+            query,
+            cancellationToken);
 
-        { 
-            var query = new GetProductByIdQuery(id);
+        return Ok(result);
+    }
 
-            var result = await _getProductByIdHandler.HandleAsync(
-                query,
-                cancellationToken);
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetProductByIdQuery(id);
 
-            if (result is null)
-                return NotFound();
+        var result = await _getProductByIdHandler.HandleAsync(
+            query,
+            cancellationToken);
 
-            return Ok(result);
+        if (result is null)
+        {
+            return NotFound();
         }
 
-
-
-
-
-
-
-
+        return Ok(result);
     }
 }
