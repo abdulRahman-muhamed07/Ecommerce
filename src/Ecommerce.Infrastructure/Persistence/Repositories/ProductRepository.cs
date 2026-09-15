@@ -35,16 +35,14 @@ public sealed class ProductRepository : IProductRepository
     }
 
     public async Task<(IReadOnlyList<Product> Items, int TotalCount)> GetActiveAsync(
-     int pageNumber,
-     int pageSize,
-     Guid? categoryId,
-     string? searchTerm,
-     string? sortBy,
-         decimal? minPrice,
-             decimal? maxPrice,
-
-
-     CancellationToken cancellationToken = default)
+        int pageNumber,
+        int pageSize,
+        Guid? categoryId,
+        string? searchTerm,
+        string? sortBy,
+        decimal? minPrice,
+        decimal? maxPrice,
+        CancellationToken cancellationToken = default)
     {
         var query = _context.Products
             .AsNoTracking()
@@ -64,6 +62,18 @@ public sealed class ProductRepository : IProductRepository
                 (p.Description != null && p.Description.Contains(searchTerm)));
         }
 
+        if (minPrice.HasValue)
+        {
+            query = query.Where(p =>
+                p.Variants.Any(v => v.Price >= minPrice.Value));
+        }
+
+        if (maxPrice.HasValue)
+        {
+            query = query.Where(p =>
+                p.Variants.Any(v => v.Price <= maxPrice.Value));
+        }
+
         var totalCount = await query.CountAsync(cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(sortBy))
@@ -72,26 +82,13 @@ public sealed class ProductRepository : IProductRepository
 
             query = sortBy switch
             {
-                "name" =>
-                    query.OrderBy(p => p.Name),
-
-                "name_desc" =>
-                    query.OrderByDescending(p => p.Name),
-
-                "price_asc" =>
-                    query.OrderBy(p => p.Variants.Min(v => v.Price)),
-
-                "price_desc" =>
-                    query.OrderByDescending(p => p.Variants.Min(v => v.Price)),
-
-                "newest" =>
-                    query.OrderByDescending(p => p.CreatedAt),
-
-                "oldest" =>
-                    query.OrderBy(p => p.CreatedAt),
-
-                _ =>
-                    query.OrderBy(p => p.Name)
+                "name" => query.OrderBy(p => p.Name),
+                "name_desc" => query.OrderByDescending(p => p.Name),
+                "price_asc" => query.OrderBy(p => p.Variants.Min(v => v.Price)),
+                "price_desc" => query.OrderByDescending(p => p.Variants.Min(v => v.Price)),
+                "newest" => query.OrderByDescending(p => p.CreatedAt),
+                "oldest" => query.OrderBy(p => p.CreatedAt),
+                _ => query.OrderBy(p => p.Name)
             };
         }
         else
@@ -99,20 +96,6 @@ public sealed class ProductRepository : IProductRepository
             query = query.OrderBy(p => p.Name);
         }
 
-        if (minPrice.HasValue)
-        {
-            query = query.Where(p =>
-                p.Variants.Any(v => v.Price >= minPrice.Value));
-
-
-            if (maxPrice.HasValue)
-            {
-                query = query.Where(p =>
-                    p.Variants.Any(v => v.Price <= maxPrice.Value));
-            }
-
-
-        }
         var items = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
@@ -157,6 +140,9 @@ public sealed class ProductRepository : IProductRepository
             .Include(x => x.Brand)
             .Include(x => x.Category)
             .Include(x => x.Variants)
+                .ThenInclude(x => x.AttributeValues)
+                    .ThenInclude(x => x.AttributeValue)
+                        .ThenInclude(x => x.ProductAttribute)
             .Include(x => x.Images);
     }
 }
