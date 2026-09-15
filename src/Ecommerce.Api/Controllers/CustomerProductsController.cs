@@ -40,7 +40,11 @@ public class CustomerProductsController : ControllerBase
                     group => group.Key,
                     group => group.Select(error => error.ErrorMessage).ToArray());
 
-            return ValidationProblem(errors);
+            return BadRequest(new
+            {
+                message = "Validation failed.",
+                errors
+            });
         }
 
         var result = await _getProductsHandler.HandleAsync(
