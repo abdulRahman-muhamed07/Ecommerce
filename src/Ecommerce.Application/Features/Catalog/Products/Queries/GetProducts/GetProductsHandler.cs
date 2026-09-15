@@ -16,9 +16,17 @@ public sealed class GetProductsHandler
          CancellationToken cancellationToken = default)
     {
         var result = await _productRepository.GetActiveAsync(
-            query.PageNumber,
-            query.PageSize,
-            cancellationToken);
+     query.PageNumber,
+      query.PageSize,
+     query.CategoryId,
+         query.SearchTerm,
+             query.SortBy,
+                 query.MinPrice,
+                     query.MaxPrice,
+
+
+
+     cancellationToken);
 
         var products = result.Items;
         var totalCount = result.TotalCount;

@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Domain.Entities;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Ecommerce.Application.Abstractions.Persistence;
 
@@ -15,6 +16,14 @@ public interface IProductRepository
     Task<(IReadOnlyList<Product> Items, int TotalCount)> GetActiveAsync(
     int pageNumber,
     int pageSize,
+        string? searchTerm,
+    Guid? categoryId,
+    string? sortBy,
+           decimal? minPrice,
+               decimal? maxPrice,
+
+
+
     CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Product>> GetByCategoryIdAsync(
         Guid categoryId,

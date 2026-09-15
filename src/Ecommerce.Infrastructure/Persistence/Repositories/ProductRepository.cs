@@ -35,16 +35,84 @@ public sealed class ProductRepository : IProductRepository
     }
 
     public async Task<(IReadOnlyList<Product> Items, int TotalCount)> GetActiveAsync(
-    int pageNumber,
-    int pageSize,
-    CancellationToken cancellationToken = default)
+     int pageNumber,
+     int pageSize,
+     Guid? categoryId,
+     string? searchTerm,
+     string? sortBy,
+         decimal? minPrice,
+             decimal? maxPrice,
+
+
+     CancellationToken cancellationToken = default)
     {
         var query = _context.Products
             .AsNoTracking()
             .Where(p => p.Status == ProductStatus.Active);
 
+        if (categoryId.HasValue)
+        {
+            query = query.Where(p => p.CategoryId == categoryId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            searchTerm = searchTerm.Trim();
+
+            query = query.Where(p =>
+                p.Name.Contains(searchTerm) ||
+                (p.Description != null && p.Description.Contains(searchTerm)));
+        }
+
         var totalCount = await query.CountAsync(cancellationToken);
 
+        if (!string.IsNullOrWhiteSpace(sortBy))
+        {
+            sortBy = sortBy.Trim().ToLower();
+
+            query = sortBy switch
+            {
+                "name" =>
+                    query.OrderBy(p => p.Name),
+
+                "name_desc" =>
+                    query.OrderByDescending(p => p.Name),
+
+                "price_asc" =>
+                    query.OrderBy(p => p.Variants.Min(v => v.Price)),
+
+                "price_desc" =>
+                    query.OrderByDescending(p => p.Variants.Min(v => v.Price)),
+
+                "newest" =>
+                    query.OrderByDescending(p => p.CreatedAt),
+
+                "oldest" =>
+                    query.OrderBy(p => p.CreatedAt),
+
+                _ =>
+                    query.OrderBy(p => p.Name)
+            };
+        }
+        else
+        {
+            query = query.OrderBy(p => p.Name);
+        }
+
+        if (minPrice.HasValue)
+        {
+            query = query.Where(p =>
+                p.Variants.Any(v => v.Price >= minPrice.Value));
+
+
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p =>
+                    p.Variants.Any(v => v.Price <= maxPrice.Value));
+            }
+
+
+        }
         var items = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
