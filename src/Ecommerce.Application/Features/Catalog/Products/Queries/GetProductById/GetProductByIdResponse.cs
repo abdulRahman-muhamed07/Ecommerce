@@ -5,5 +5,29 @@ public sealed record GetProductByIdResponse(
     string Name,
     string Slug,
     string? Description,
-    Guid BrandId,
-    Guid CategoryId);
+ProductBrandResponse Brand,
+ProductCategoryResponse Category,
+    IReadOnlyList<ProductImageResponse> Images,
+    IReadOnlyList<ProductVariantResponse> Variants);
+
+public sealed record ProductVariantResponse(
+    Guid Id,
+    string SKU,
+    decimal Price,
+    decimal? CompareAtPrice);
+
+public sealed record ProductImageResponse(
+    Guid Id,
+    string ImageUrl,
+    int SortOrder);
+
+public sealed record ProductBrandResponse(
+    Guid Id,
+    string Name,
+    string Slug,
+    string? LogoUrl);
+
+public sealed record ProductCategoryResponse(
+    Guid Id,
+    string Name,
+    string Slug);

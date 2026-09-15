@@ -38,7 +38,8 @@ public sealed class GetProductsHandler
                 product.Slug,
                 product.Description,
                 product.BrandId,
-                product.CategoryId))
+                product.CategoryId, product.Variants.Min(v => v.Price)
+                ))
             .ToList();
 
         var totalPages = (int)Math.Ceiling(

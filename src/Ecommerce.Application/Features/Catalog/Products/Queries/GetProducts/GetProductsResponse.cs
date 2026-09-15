@@ -10,6 +10,8 @@ namespace Ecommerce.Application.Features.Catalog.Products.Queries.GetProducts
     string Slug,
     string? Description,
     Guid BrandId,
-    Guid CategoryId
+    Guid CategoryId,
+            decimal Price
+
 );
 }

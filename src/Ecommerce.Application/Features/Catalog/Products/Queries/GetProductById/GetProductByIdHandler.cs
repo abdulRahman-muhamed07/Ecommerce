@@ -32,12 +32,38 @@ namespace Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById
                 return null;
 
             return new GetProductByIdResponse(
-                product.Id,
-                product.Name,
-                product.Slug,
-                product.Description,
-                product.BrandId,
-                product.CategoryId);
+        product.Id,
+        product.Name,
+        product.Slug,
+        product.Description,
+
+        new ProductBrandResponse(
+            product.Brand.Id,
+            product.Brand.Name,
+            product.Brand.Slug,
+            product.Brand.LogoUrl),
+
+        new ProductCategoryResponse(
+            product.Category.Id,
+            product.Category.Name,
+            product.Category.Slug),
+
+        product.Images
+            .OrderBy(image => image.SortOrder)
+            .Select(image => new ProductImageResponse(
+                image.Id,
+                image.ImageUrl,
+                image.SortOrder))
+            .ToList(),
+
+        product.Variants
+            .Select(variant => new ProductVariantResponse(
+                variant.Id,
+                variant.SKU,
+                variant.Price,
+                variant.CompareAtPrice))
+            .ToList());
+
         }
 
 
