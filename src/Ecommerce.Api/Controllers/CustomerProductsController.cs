@@ -1,4 +1,5 @@
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
+using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductBySlug;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProducts;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,17 @@ public class CustomerProductsController : ControllerBase
     private readonly GetProductsHandler _getProductsHandler;
     private readonly GetProductByIdHandler _getProductByIdHandler;
     private readonly IValidator<GetProductsQuery> _getProductsValidator;
-
+    private readonly GetProductBySlugHandler _getProductBySlugHandler;
     public CustomerProductsController(
         GetProductsHandler getProductsHandler,
         GetProductByIdHandler getProductByIdHandler,
-        IValidator<GetProductsQuery> getProductsValidator)
+        IValidator<GetProductsQuery> getProductsValidator,
+        GetProductBySlugHandler getProductBySlugHandler)
     {
         _getProductsHandler = getProductsHandler;
         _getProductByIdHandler = getProductByIdHandler;
         _getProductsValidator = getProductsValidator;
+        _getProductBySlugHandler = getProductBySlugHandler;
     }
 
     [HttpGet]
@@ -62,6 +65,30 @@ public class CustomerProductsController : ControllerBase
         var query = new GetProductByIdQuery(id);
 
         var result = await _getProductByIdHandler.HandleAsync(
+            query,
+            cancellationToken);
+
+        if (result is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+
+
+    [HttpGet("slug/{slug}")]
+    public async Task<IActionResult> GetBySlug(
+    string slug,
+    CancellationToken cancellationToken)
+    {
+        var query = new GetProductBySlugQuery
+        {
+            Slug = slug
+        };
+
+        var result = await _getProductBySlugHandler.HandleAsync(
             query,
             cancellationToken);
 

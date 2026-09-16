@@ -1,5 +1,6 @@
 using Ecommerce.Application.Abstractions.Persistence;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
+using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductBySlug;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProducts;
 using Ecommerce.Infrastructure.Identity;
 using Ecommerce.Infrastructure.Persistence;
@@ -24,6 +25,9 @@ public static class DependencyInjection
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<GetProductByIdHandler>();
         services.AddScoped<GetProductsHandler>();
+        services.AddScoped<GetProductBySlugHandler>();
+
+
         services.AddIdentityCore<ApplicationUser>(options =>
         {
             options.User.RequireUniqueEmail = true;
