@@ -62,16 +62,12 @@ public sealed class ProductRepository : IProductRepository
                 (p.Description != null && p.Description.Contains(searchTerm)));
         }
 
-        if (minPrice.HasValue)
+        if (minPrice.HasValue || maxPrice.HasValue)
         {
             query = query.Where(p =>
-                p.Variants.Any(v => v.Price >= minPrice.Value));
-        }
-
-        if (maxPrice.HasValue)
-        {
-            query = query.Where(p =>
-                p.Variants.Any(v => v.Price <= maxPrice.Value));
+                p.Variants.Any(v =>
+                    (!minPrice.HasValue || v.Price >= minPrice.Value) &&
+                    (!maxPrice.HasValue || v.Price <= maxPrice.Value)));
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
