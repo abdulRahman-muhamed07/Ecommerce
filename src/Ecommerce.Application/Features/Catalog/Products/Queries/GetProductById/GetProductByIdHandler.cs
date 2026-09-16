@@ -48,12 +48,15 @@ public class GetProductByIdHandler
                 .ToList(),
 
             product.Variants
-                .Select(variant => new ProductVariantResponse(
-                    variant.Id,
-                    variant.SKU,
-                    variant.Price,
-                    variant.CompareAtPrice,
-                    variant.AttributeValues
+    .Select(variant => new ProductVariantResponse(
+        variant.Id,
+        variant.SKU,
+        variant.Price,
+        variant.CompareAtPrice,
+                variant.StockQuantity,
+        variant.StockQuantity > 0,
+
+        variant.AttributeValues
                         .Select(attributeValue => new ProductVariantAttributeResponse(
                             attributeValue.AttributeValue.ProductAttributeId,
                             attributeValue.AttributeValue.ProductAttribute.Name,

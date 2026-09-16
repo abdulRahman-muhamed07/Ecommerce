@@ -12,6 +12,27 @@ public sealed class ProductVariant : BaseEntity
     public decimal? CostPrice { get; private set; }
     public string? Barcode { get; private set; }
     public decimal? Weight { get; private set; }
+
+    public int StockQuantity { get; private set; }
+
+    public void IncreaseStock(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException("Quantity must be greater than zero.");
+
+        StockQuantity += quantity;
+    }
+
+    public void DecreaseStock(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException("Quantity must be greater than zero.");
+
+        if (StockQuantity < quantity)
+            throw new InvalidOperationException("Insufficient stock.");
+
+        StockQuantity -= quantity;
+    }
     public ICollection<ProductImage> Images { get; private set; } = new List<ProductImage>();
     public ICollection<VariantAttributeValue> AttributeValues { get; private set; } = new List<VariantAttributeValue>();
 }

@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Ecommerce.Application.Features.Catalog.Products.Queries.GetProductBySlug
 {
-    internal class GetProductBySlugQuery
+    public  class GetProductBySlugQuery
     {
+        public string Slug { get; init; } = string.Empty;
+
     }
 }

@@ -1,4 +1,4 @@
-namespace Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
+﻿namespace Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
 
 public sealed record GetProductByIdResponse(
     Guid Id,
@@ -14,6 +14,8 @@ public sealed record ProductVariantResponse(
     Guid Id,
     string SKU,
     decimal Price,
+    bool IsAvailable,
+
     decimal? CompareAtPrice,
     IReadOnlyList<ProductVariantAttributeResponse> Attributes);
 
@@ -21,6 +23,7 @@ public sealed record ProductVariantAttributeResponse(
     Guid AttributeId,
     string AttributeName,
     Guid AttributeValueId,
+    int StockQuantity,
     string AttributeValue);
 
 public sealed record ProductImageResponse(
