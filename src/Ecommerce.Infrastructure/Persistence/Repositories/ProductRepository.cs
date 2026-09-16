@@ -80,8 +80,15 @@ public sealed class ProductRepository : IProductRepository
             {
                 "name" => query.OrderBy(p => p.Name),
                 "name_desc" => query.OrderByDescending(p => p.Name),
-                "price_asc" => query.OrderBy(p => p.Variants.Min(v => v.Price)),
-                "price_desc" => query.OrderByDescending(p => p.Variants.Min(v => v.Price)),
+                "price_asc" => query.OrderBy(p => p.Variants
+                       .Where(v => v.StockQuantity > 0)
+                         .Select(v => (decimal?)v.Price)
+                       .Min() ?? decimal.MaxValue),
+                "price_desc" => query.OrderByDescending(p => p.Variants
+                            .Where(v => v.StockQuantity > 0)
+                    .Select(v => (decimal?)v.Price)
+                          .Min() ?? 0),
+
                 "newest" => query.OrderByDescending(p => p.CreatedAt),
                 "oldest" => query.OrderBy(p => p.CreatedAt),
                 _ => query.OrderBy(p => p.Name)

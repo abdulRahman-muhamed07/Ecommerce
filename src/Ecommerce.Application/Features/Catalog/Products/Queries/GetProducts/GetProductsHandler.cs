@@ -38,7 +38,10 @@ public sealed class GetProductsHandler
                 product.Slug,
                 product.Description,
                 product.BrandId,
-                product.CategoryId, product.Variants.Min(v => v.Price)
+                product.CategoryId, product.Variants
+                   .Where(v => v.StockQuantity > 0)
+                  .Select(v => (decimal?)v.Price)
+               .Min() ?? 0
                 ))
             .ToList();
 
