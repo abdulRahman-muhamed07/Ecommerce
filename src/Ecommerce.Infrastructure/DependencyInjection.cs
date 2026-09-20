@@ -1,4 +1,5 @@
 using Ecommerce.Application.Abstractions.Persistence;
+using Ecommerce.Application.Abstractions.Persistence.Repositories;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductBySlug;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProducts;
@@ -26,6 +27,15 @@ public static class DependencyInjection
         services.AddScoped<GetProductByIdHandler>();
         services.AddScoped<GetProductsHandler>();
         services.AddScoped<GetProductBySlugHandler>();
+        services.AddScoped<ICartRepository, CartRepository>();
+
+
+
+
+
+
+
+
 
 
         services.AddIdentityCore<ApplicationUser>(options =>
