@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Ecommerce.Application.Identity
 {
-    internal interface ICurrentUserService
+    public interface ICurrentUserService
     {
+        string? UserId { get; }
+
     }
 }

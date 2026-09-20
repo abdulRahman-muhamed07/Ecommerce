@@ -16,12 +16,19 @@ public class CartRepository : ICartRepository
     }
 
     public async Task<Cart?> GetByUserIdAsync(
-        string userId,
-        CancellationToken cancellationToken = default)
+    string userId,
+    CancellationToken cancellationToken = default)
     {
         return await _context.Carts
             .AsNoTracking()
             .Include(c => c.Items)
+                .ThenInclude(i => i.ProductVariant)
+                    .ThenInclude(v => v.Product)
+            .Include(c => c.Items)
+                .ThenInclude(i => i.ProductVariant)
+                    .ThenInclude(v => v.AttributeValues)
+                        .ThenInclude(av => av.AttributeValue)
+                            .ThenInclude(a => a.ProductAttribute)
             .FirstOrDefaultAsync(
                 c => c.UserId == userId,
                 cancellationToken);
