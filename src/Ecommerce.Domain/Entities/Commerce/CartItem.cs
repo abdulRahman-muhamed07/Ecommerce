@@ -10,4 +10,41 @@ public sealed class CartItem : BaseEntity
 
     public int Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
+
+
+
+
+    private CartItem()
+    {
+    }
+
+    public CartItem(
+        Guid productVariantId,
+        int quantity,
+        decimal unitPrice)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException(
+                "Quantity must be greater than zero.",
+                nameof(quantity));
+
+        if (unitPrice < 0)
+            throw new ArgumentException(
+                "Unit price cannot be negative.",
+                nameof(unitPrice));
+
+        ProductVariantId = productVariantId;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+    }
+
+    public void IncreaseQuantity(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException(
+                "Quantity must be greater than zero.",
+                nameof(quantity));
+
+        Quantity += quantity;
+    }
 }

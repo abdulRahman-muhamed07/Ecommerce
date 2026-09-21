@@ -32,7 +32,7 @@ public static class DependencyInjection
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<GetCartHandler>();
 
-
+        services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
