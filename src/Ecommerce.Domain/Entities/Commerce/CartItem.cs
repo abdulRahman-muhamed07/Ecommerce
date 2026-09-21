@@ -47,4 +47,15 @@ public sealed class CartItem : BaseEntity
 
         Quantity += quantity;
     }
+
+
+    public void UpdateQuantity(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException(
+                "Quantity must be greater than zero.",
+                nameof(quantity));
+
+        Quantity = quantity;
+    }
 }

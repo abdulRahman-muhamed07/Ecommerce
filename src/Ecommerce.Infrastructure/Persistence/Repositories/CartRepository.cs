@@ -1,5 +1,4 @@
-﻿using Ecommerce.Application.Abstractions.Persistence;
-using Ecommerce.Application.Abstractions.Persistence.Repositories;
+﻿using Ecommerce.Application.Abstractions.Persistence.Repositories;
 using Ecommerce.Domain.Entities;
 using Ecommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +15,8 @@ public class CartRepository : ICartRepository
     }
 
     public async Task<Cart?> GetByUserIdAsync(
-    string userId,
-    CancellationToken cancellationToken = default)
+        string userId,
+        CancellationToken cancellationToken = default)
     {
         return await _context.Carts
             .AsNoTracking()
@@ -32,5 +31,25 @@ public class CartRepository : ICartRepository
             .FirstOrDefaultAsync(
                 c => c.UserId == userId,
                 cancellationToken);
+    }
+
+    public async Task<Cart?> GetByUserIdForUpdateAsync(
+        string userId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Carts
+            .Include(c => c.Items)
+            .FirstOrDefaultAsync(
+                c => c.UserId == userId,
+                cancellationToken);
+    }
+
+    public async Task AddAsync(
+        Cart cart,
+        CancellationToken cancellationToken = default)
+    {
+        await _context.Carts.AddAsync(
+            cart,
+            cancellationToken);
     }
 }

@@ -1,5 +1,6 @@
 using Ecommerce.Application.Abstractions.Persistence;
 using Ecommerce.Application.Abstractions.Persistence.Repositories;
+using Ecommerce.Application.Features.Catalog.Cart.Commands.UpdateCartItem;
 using Ecommerce.Application.Features.Catalog.Cart.Queries.GetCart;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductBySlug;
@@ -37,8 +38,8 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
-
-
+        services.AddScoped<UpdateCartItemHandler>();
+        services.AddScoped<GetCartHandler>();
 
 
 
