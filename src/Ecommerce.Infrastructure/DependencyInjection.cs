@@ -47,9 +47,9 @@ public static class DependencyInjection
         services.AddScoped<UpdateCartItemHandler>();
         services.AddScoped<GetCartHandler>();
         services.AddScoped<ClearCartHandler>();
+        services.AddScoped<IAddressRepository, AddressRepository>();
 
-
-
+        services.AddScoped<IShippingMethodRepository, ShippingMethodRepository>();
 
 
 

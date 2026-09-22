@@ -4,6 +4,46 @@ namespace Ecommerce.Domain.Entities;
 
 public sealed class OrderAddress : BaseEntity
 {
+
+    public OrderAddress(
+    AddressType addressType,
+    string firstName,
+    string lastName,
+    string phone,
+    string country,
+    string city,
+    string area,
+    string street,
+    string? building,
+    string? floor,
+    string? apartment,
+    string? postalCode)
+    {
+        AddressType = addressType;
+        FirstName = firstName;
+        LastName = lastName;
+        Phone = phone;
+        Country = country;
+        City = city;
+        Area = area;
+        Street = street;
+        Building = building;
+        Floor = floor;
+        Apartment = apartment;
+        PostalCode = postalCode;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     public Guid OrderId { get; private set; }
     public AddressType AddressType { get; private set; }
     public string FirstName { get; private set; } = null!;

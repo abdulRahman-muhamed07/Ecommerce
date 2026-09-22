@@ -70,11 +70,7 @@ public sealed class Order : BaseEntity
         OrderStatus = OrderStatus.Cancelled;
     }
 
-    public void AddItem(OrderItem item)
-    {
-        ArgumentNullException.ThrowIfNull(item);
-        Items.Add(item);
-    }
+    
 
     private void TransitionTo(OrderStatus requestedStatus)
     {
@@ -91,4 +87,77 @@ public sealed class Order : BaseEntity
 
         OrderStatus = requestedStatus;
     }
+
+
+
+
+
+    public void AddItem(OrderItem item)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+
+        Items.Add(item);
+
+        RecalculateTotals();
+    }
+
+    private void RecalculateTotals()
+    {
+        Subtotal = Items.Sum(item =>
+            item.UnitPrice * item.Quantity);
+
+        DiscountAmount = Items.Sum(item =>
+            item.DiscountAmount);
+
+        TaxAmount = Items.Sum(item =>
+            item.TaxAmount);
+
+        TotalAmount =
+            Subtotal
+            - DiscountAmount
+            + ShippingAmount
+            + TaxAmount;
+    }
+
+
+
+
+    public void SetShippingAmount(decimal shippingAmount)
+    {
+        if (shippingAmount < 0)
+            throw new ArgumentException(
+                "Shipping amount cannot be negative.",
+                nameof(shippingAmount));
+
+        ShippingAmount = shippingAmount;
+
+        RecalculateTotals();
+    }
+
+
+
+
+
+    public void AddAddress(OrderAddress address)
+    {
+        ArgumentNullException.ThrowIfNull(address);
+
+        Addresses.Add(address);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

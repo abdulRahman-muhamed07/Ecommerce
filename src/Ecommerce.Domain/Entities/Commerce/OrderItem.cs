@@ -1,3 +1,4 @@
+using Ecommerce.Domain.BusinessRule;
 using Ecommerce.Domain.Common;
 
 namespace Ecommerce.Domain.Entities;
@@ -13,4 +14,41 @@ public sealed class OrderItem : BaseEntity
     public decimal DiscountAmount { get; private set; }
     public decimal TaxAmount { get; private set; }
     public decimal TotalAmount { get; private set; }
+
+
+
+    private OrderItem()
+    {
+    }
+
+    public OrderItem(
+        Guid productVariantId,
+        string productName,
+        string sku,
+        int quantity,
+        decimal unitPrice,
+        decimal discountAmount,
+        decimal taxAmount)
+    {
+        OrderItemQuantityRule.Check(quantity);
+        OrderItemPriceRule.Check(unitPrice);
+
+        var subtotal = unitPrice * quantity;
+
+        OrderItemDiscountRule.Check(
+            discountAmount,
+            subtotal);
+
+        ProductVariantId = productVariantId;
+        ProductName = productName;
+        SKU = sku;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+        DiscountAmount = discountAmount;
+        TaxAmount = taxAmount;
+
+        TotalAmount = subtotal
+                      - discountAmount
+                      + taxAmount;
+    }
 }
