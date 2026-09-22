@@ -39,6 +39,8 @@ public class CustomerCartController : ControllerBase
     {
         var query = new GetCartQuery();
 
+        // يعني هنا الكنترولر بينادي علي ميثود الهاندل اسينك اللي هيه متهندله فالهاندلر 
+
         var result = await _getCartHandler.HandleAsync(
             query,
             cancellationToken);
