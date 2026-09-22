@@ -1,5 +1,7 @@
 ﻿using Ecommerce.Application.Features.Catalog.Cart.Commands.AddToCart;
 using Ecommerce.Application.Features.Catalog.Cart.Commands.AddToCart.UpdateCartItem;
+using Ecommerce.Application.Features.Catalog.Cart.Commands.ClearCart;
+using Ecommerce.Application.Features.Catalog.Cart.Commands.RemoveCartItem;
 using Ecommerce.Application.Features.Catalog.Cart.Commands.UpdateCartItem;
 using Ecommerce.Application.Features.Catalog.Cart.Queries.GetCart;
 using Microsoft.AspNetCore.Authorization;
@@ -17,11 +19,18 @@ public class CustomerCartController : ControllerBase
 
     private readonly UpdateCartItemHandler _updateCartItemHandler;
 
-    public CustomerCartController(GetCartHandler getCartHandler, AddToCartHandler addToCartHandler, UpdateCartItemHandler updateCartItemHandler)
+    private readonly RemoveCartItemHandler _removeCartItemHandler;
+    private readonly ClearCartHandler _clearCartHandler;
+
+    public CustomerCartController(GetCartHandler getCartHandler, 
+        AddToCartHandler addToCartHandler, UpdateCartItemHandler updateCartItemHandler, 
+        RemoveCartItemHandler removeCartItemHandler, ClearCartHandler clearCartHandler)
     {
         _getCartHandler = getCartHandler;
         _addToCartHandler = addToCartHandler;
         _updateCartItemHandler = updateCartItemHandler;
+        _removeCartItemHandler = removeCartItemHandler;
+        _clearCartHandler = clearCartHandler;
     }
 
     [HttpGet]
@@ -82,12 +91,35 @@ public class CustomerCartController : ControllerBase
 
 
 
+    [HttpDelete("items/{cartItemId:guid}")]
+    public async Task<IActionResult> RemoveCartItem(
+    Guid cartItemId,
+    CancellationToken cancellationToken)
+    {
+        var command = new RemoveCartItemCommand(cartItemId);
+
+        await _removeCartItemHandler.HandleAsync(
+            command,
+            cancellationToken);
+
+        return NoContent();
+    }
 
 
 
 
+    [HttpDelete]
+    public async Task<IActionResult> ClearCart(
+    CancellationToken cancellationToken)
+    {
+        var command = new ClearCartCommand();
 
+        await _clearCartHandler.HandleAsync(
+            command,
+            cancellationToken);
 
+        return NoContent();
+    }
 
 
 

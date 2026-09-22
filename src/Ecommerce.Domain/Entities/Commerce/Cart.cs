@@ -47,4 +47,18 @@ public sealed class Cart : BaseEntity
                 quantity,
                 unitPrice));
     }
+
+
+
+    public void RemoveItem(Guid cartItemId)
+    {
+        var item = Items
+            .FirstOrDefault(x => x.Id == cartItemId);
+
+        if (item is null)
+            throw new KeyNotFoundException(
+                "Cart item was not found.");
+
+        Items.Remove(item);
+    }
 }

@@ -1,5 +1,8 @@
 using Ecommerce.Application.Abstractions.Persistence;
 using Ecommerce.Application.Abstractions.Persistence.Repositories;
+using Ecommerce.Application.Features.Catalog.Cart.Commands.AddToCart;
+using Ecommerce.Application.Features.Catalog.Cart.Commands.ClearCart;
+using Ecommerce.Application.Features.Catalog.Cart.Commands.RemoveCartItem;
 using Ecommerce.Application.Features.Catalog.Cart.Commands.UpdateCartItem;
 using Ecommerce.Application.Features.Catalog.Cart.Queries.GetCart;
 using Ecommerce.Application.Features.Catalog.Products.Queries.GetProductById;
@@ -37,9 +40,28 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-
+        services.AddScoped<GetCartHandler>();
+        services.AddScoped<AddToCartHandler>();
+        services.AddScoped<UpdateCartItemHandler>();
+        services.AddScoped<RemoveCartItemHandler>();
         services.AddScoped<UpdateCartItemHandler>();
         services.AddScoped<GetCartHandler>();
+        services.AddScoped<ClearCartHandler>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
